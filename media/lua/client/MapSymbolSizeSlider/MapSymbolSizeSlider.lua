@@ -58,14 +58,14 @@ end
 
 
 function MapSymbolSizeSlider.createSlider(target, x, y, w, h, func)
-    local slider = MapSymbolSizeSlider.ISScaleSliderPanel:new(x, y, w, h, target, func)
+	local slider = MapSymbolSizeSlider.ISScaleSliderPanel:new(x, y, w, h, target, func)
 	slider.currentValue = (MapSymbolSizeSlider.params.currentScale - SCALE_MIN) / SCALE_STEP
 	slider:setValues(0, (SCALE_MAX - SCALE_MIN) / SCALE_STEP, 1, 0)
-    slider:initialise()
-    slider:instantiate()
+	slider:initialise()
+	slider:instantiate()
 	slider.doToolTip = false
 
-    return slider
+	return slider
 end
 
 
