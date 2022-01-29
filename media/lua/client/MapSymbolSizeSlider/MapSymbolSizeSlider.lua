@@ -156,8 +156,8 @@ end
 
 
 function ISWorldMapSymbols:new(...)
-	-- if ExtraMapSymbolsUI mod is installed, apply my decorator
-	if ExtraMapSymbolsUI ~= nil and self.extraUI_Refresh ~= nil then
+	-- if ExtraMapSymbolsUI mod is installed and decorator is not applied, apply my decorator
+	if ExtraMapSymbolsUI ~= nil and self.extraUI_Refresh ~= nil and ISWorldMapSymbols_extraUI_Refresh == nil then
 		ISWorldMapSymbols_extraUI_Refresh = self.extraUI_Refresh
 		self.extraUI_Refresh = MapSymbolSizeSlider.extraUI_Refresh
 	end
