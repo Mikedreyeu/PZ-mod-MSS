@@ -10,6 +10,7 @@ local MapSymbolSizeSlider = {
 		scaleStep = 0.1
 	},
 	-- to preserve notes scales at least for current session (сurrently there is no way to get symbol scale from java symbol object [WorldMapBaseSymbolV1])
+	-- (approx. note scale can be calculated from symbol height)
 	symbolScales = {} ,
 	-- original functions that are being intercepted
 	originalPZFuncs = {
@@ -166,7 +167,8 @@ function ISWorldMapSymbols:new(...)
 end
 
 
-
+-- Never do:
+-- TODO calculate note scale by its height?
 -- TODO add mod settings
 -- TODO block change note size while editing
 -- TODO block slider if no pencil (onMouseMove + check inv)
