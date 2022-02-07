@@ -73,6 +73,8 @@ end
 function ISWorldMapSymbols:prerender()
 	MapSymbolSizeSlider.originalPZFuncs.ISWorldMapSymbols.prerender(self)
 
+	if MapSymbolSizeSlider.anchorElement == nil then return end
+	
 	local y = MapSymbolSizeSlider.anchorElement:getBottom() + FONT_HGT_SMALL + 2 * 2
 
 	self:drawText(getText("IGUI_Map_MapSymbolSize"), self.width/2 - (getTextManager():MeasureStringX(UIFont.Small, getText("IGUI_Map_MapSymbolSize")) / 2), y, 1,1,1,1, UIFont.Small)
