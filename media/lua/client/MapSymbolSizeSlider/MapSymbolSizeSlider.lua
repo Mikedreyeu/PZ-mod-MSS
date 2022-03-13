@@ -25,7 +25,8 @@ local MapSymbolSizeSlider = {
 		}
 	},
 	compatability = {
-		ExtraMapSymbolsUI_installed = false
+		ExtraMapSymbolsUI_installed = false,
+		ExtraMapSymbols_installed = false
 	},
 }
 
@@ -84,6 +85,10 @@ end
 function ISWorldMapSymbols:prerender()
 	MapSymbolSizeSlider.originalPZFuncs.ISWorldMapSymbols.prerender(self)
 
+	-- [ExtraMapSymbols mod compatability] runs once
+	MapSymbolSizeSlider.compatability.getBackThePrerender(self)
+	-- END [ExtraMapSymbols mod compatability]
+
 	if self.MSSS_anchorElement == nil then return end
 	
 	local y = self.MSSS_anchorElement:getBottom() + FONT_HGT_SMALL + 2 * 2
@@ -131,10 +136,30 @@ function ISWorldMapSymbolTool_EditNote:onEditNote(...)
 end
 
 
--- ExtraMapSymbolsUI mod compatability, they constantly refresh ui for some reason
+-- ExtraMapSymbols and ExtraMapSymbolsUI mod compatability, they constantly refresh ui for some reason
 
 local ISWorldMapSymbols_extraUI_Refresh = nil
 
+local MapSymbolSizeSlider_ISWorldMapSymbols_prerender = ISWorldMapSymbols.prerender
+
+
+function MapSymbolSizeSlider.compatability.getBackThePrerender(target)
+	-- If you are seeing this, I'm sorry 
+	-- Had to do this, due to other mod changing the logic of build-in prerender and using it as an init function:
+	-- "ExtraMapSymbols\media\lua\client\ExtraMapSymbols.lua" end of the file (prerender manipulation)
+	-- ^^^ this blocks the possibility of interception of `prerender` for every other mod below it.
+
+	if not MapSymbolSizeSlider_ISWorldMapSymbols_prerender then return end
+
+	MapSymbolSizeSlider.compatability.ExtraMapSymbols_installed = target:isExtraMapSymbolsInstalled()
+
+	if MapSymbolSizeSlider.compatability.ExtraMapSymbols_installed then 
+		MapSymbolSizeSlider.originalPZFuncs.ISWorldMapSymbols.prerender = ISWorldMapSymbols.prerender
+		ISWorldMapSymbols.prerender = MapSymbolSizeSlider_ISWorldMapSymbols_prerender
+	end
+
+	MapSymbolSizeSlider_ISWorldMapSymbols_prerender = nil  -- set it to nil so this crap never runs again
+end
 
 function MapSymbolSizeSlider:extraUI_Refresh(...)
 	ISWorldMapSymbols_extraUI_Refresh(self, ...)
@@ -166,11 +191,20 @@ function MapSymbolSizeSlider.getScalingSymbolHandler(ISWorldMapSymbols_object)
 	return scalingSymbolHandler
 end
 
+function ISWorldMapSymbols:isExtraMapSymbolsInstalled()
+	for index, value in ipairs(self.symbolList) do
+		if value == "extra:x_small" then
+            return true
+        end
+    end
+	
+	return false
+end
 
 function ISWorldMapSymbols:new(...)
 	local ISWorldMapSymbols_object = MapSymbolSizeSlider.originalPZFuncs.ISWorldMapSymbols.new(self, ...)
 
-	if ExtraMapSymbolsUI ~= nil and self.extraUI_Refresh ~= nil then
+	if ExtraMapSymbolsUI ~= nil then
 		MapSymbolSizeSlider.compatability.ExtraMapSymbolsUI_installed = true
 	end
 
@@ -186,6 +220,4 @@ function ISWorldMapSymbols:new(...)
 end
 
 
-
--- TODO header not rendering 
 -- TODO move current scale to ISWorldMapSymbols class
