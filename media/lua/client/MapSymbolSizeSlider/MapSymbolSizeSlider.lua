@@ -213,7 +213,9 @@ function ISWorldMapSymbols:new(...)
 		ISWorldMapSymbols_extraUI_Refresh = self.extraUI_Refresh
 		self.extraUI_Refresh = MapSymbolSizeSlider.extraUI_Refresh
 
-		ExtraMapSymbolsUI:OnEvent("ScalingSymbol", MapSymbolSizeSlider.getScalingSymbolHandler(ISWorldMapSymbols_object))
+		if ExtraMapSymbolsUI.OnEvent then -- check if exists, in case older version of ExtraMapSymbolsUI is installed
+			ExtraMapSymbolsUI:OnEvent("ScalingSymbol", MapSymbolSizeSlider.getScalingSymbolHandler(ISWorldMapSymbols_object))
+		end
 	end
 
 	return ISWorldMapSymbols_object
